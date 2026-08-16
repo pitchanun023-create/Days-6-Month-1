@@ -1,0 +1,39 @@
+!pip install groq
+from google.colab import userdata
+from groq import Groq
+
+api_key_secret = userdata.get('Project01')
+client = Groq(api_key=api_key_secret)
+
+my_data = """
+ข้อมูลโปรเจคของฉัน
+- ชื่องาน : นักสู้พันธุ์ข้าวเหนื่อย
+- โปรแกรมที่ใช้ : ข้าวเหนียว
+- รายละเอียดสำคัญ : ข้าวเหนียวต้องนิ่ม แน่น หอม และต้องร้อนๆเก็บไว้ในกระติ๊บ
+"""
+
+my_question = "งานนี้คืองานเกี่ยวกับอะไร ใช้โปรแกรมอะไร แล้วมีอะไรที่สำคัญบ้าง?"
+
+prompt_with_rag = f"""
+อ้างอิงข้อมูลจากด้านล่างนี้เท่านั้น:
+{my_data}
+
+คำถาม : {my_question}
+"""
+
+try: 
+  chat_completion = client.chat.completions.create(
+      messages=[
+        {
+            "role": "user",
+            "content": prompt_with_rag,
+        }
+      ],
+      model="llama-3.1-8b-instant",
+  )
+
+  print("AI ตอบกลับมาว่า")
+  print(chat_completion.choices[0].message.content)
+
+except Exception as e:
+  print(f"เกิดข้อผิดพลาด{e}")
