@@ -1,0 +1,20 @@
+!pip install -q groq
+
+
+from google.colab import userdata
+from groq import Groq
+
+
+# ดึง Key จาก Secrets ที่ตั้งชื่อไว้ (เช่น day6test) หรือใส่สติ๊กเกอร์รหัสตรงๆ
+client = Groq(api_key=userdata.get('day6test'))
+
+
+response = client.chat.completions.create(
+    model="llama-3.3-70b-versatile",  # หรือใช้รุ่นอื่นๆ ของ Groq
+    messages=[
+        {"role": "user", "content": "แนะนำสายกีตาร์โปร่งสำหรับมือใหม่ 1 ยี่ห้อ ตอบสั้นๆ"}
+    ]
+)
+
+
+print(response.choices[0].message.content)
