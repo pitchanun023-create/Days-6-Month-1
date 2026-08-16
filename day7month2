@@ -1,0 +1,48 @@
+!pip install groq
+from google.colab import userdata
+from groq import Groq
+
+
+api_key_secret = userdata.get('Project01')
+client = Groq(api_key=api_key_secret)
+
+
+my_customer_data = """
+ข้อมูลลับของโปรเจกต:
+- ชื่อโปรเจกต์: Project Titan
+- หัวหน้าทีม: สมชาย ใจดี
+- งบประมาณ: 1.5 ล้านบาท
+- ความลับสุดยอด: ฐานทัพลับซ่อนอยู่ที่ชั้น 4 ของตึกร้าง
+"""
+
+
+my_question = "ฐานทัพลับของโปรเจกต์นี้ซ่อนอยู่ที่ไหน และหัวหน้าทีมคือใคร?"
+
+
+prompt_with_rag = f"""
+อ้างอิงจากข้อมูลด้านล่างนี้เท่านั้น:
+{my_customer_data}
+
+
+คำถาม: {my_question}
+"""
+
+
+try:
+  chat_completion = client.chat.completions.create(
+      messages=[
+          {
+              "role": "user",
+              "content": prompt_with_rag,
+          }
+      ],
+      model="llama-3.1-8b-instant",
+  )
+
+
+  print("AI ตอบกลับมาว่า")
+  print(chat_completion.choices[0].message.content)
+
+
+except Exception as e:
+  print(f"เกิดข้อผิดพลาด{e}")
